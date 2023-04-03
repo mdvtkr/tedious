@@ -83,6 +83,8 @@ def compress_grouped_files(grouped_files, output_directory, delete_files=False, 
 
     for group_name, files in grouped_files.items():
         output_file = output_directory / f"{group_name}.zip"
+        print(f"{output_file}:")
+        log_format = "  {0}" + " -> deleted" if delete_files else ""
         if not dry_run:
             with zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for file_path in files:
@@ -92,10 +94,10 @@ def compress_grouped_files(grouped_files, output_directory, delete_files=False, 
                             file_path.unlink()
                         except Exception as e:
                             print(f"Failed to delete {file_path.name}: {str(e)}")
+                    print(log_format.format(file_path))
         else:
-            print(f"{output_file}:")
             for file_path in files:
-                print(f"  {file_path}")
+                print(log_format.format(file_path))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Compress files in the given directory')
