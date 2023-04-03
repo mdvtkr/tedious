@@ -33,7 +33,7 @@ def is_valid_date(date_str):
 
 def is_in_interval(dt, interval):
     today = datetime.today()
-    if interval == 'm':
+    if interval == 'd':
         return dt.date() == today.date()
     elif interval == 'm':
         return dt.year == today.year and dt.month == today.month
@@ -52,7 +52,7 @@ def extract_date_and_name(file_name):
                 return groups
     return None
 
-def group_files(input_path, interval):
+def group_files(input_path, interval, ext):
     grouped_files = defaultdict(list)
     input_path = Path(input_path)
 
@@ -63,6 +63,10 @@ def group_files(input_path, interval):
                 date, name, extension = extracted[0], extracted[1], extracted[2]
             else:
                 date, name, extension = extracted[1], extracted[0], extracted[2]
+
+            if extension != ext:
+                continue
+
             dt = datetime.strptime(date, '%Y%m%d' if len(date) == 8 else '%Y-%m-%d' if '-' in date else '%Y.%m.%d')
             if not is_in_interval(dt, interval):
                 if interval == 'm':
@@ -99,9 +103,10 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', default='.', help='Path to the output directory')
     parser.add_argument('-d', '--delete', action='store_true', help='Delete files after successful compression')
     parser.add_argument('-i', '--interval', choices=['d', 'm'], help='Compression interval (daily or monthly)')
+    parser.add_argument('-e', '--extension', default='log', help='file extension. default is ''log''.')
     parser.add_argument('--dry-run', action='store_true', help='Dry-run mode: display files to be compressed without actually compressing them')
 
     args = parser.parse_args()
 
-    grouped_files = group_files(args.input_directory, args.interval)
+    grouped_files = group_files(args.input_directory, args.interval, args.extension)
     compress_grouped_files(grouped_files, args.output, delete_files=args.delete, dry_run=args.dry_run)
