@@ -14,4 +14,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 
-[tool.poetry_bumpversion.file."src/__init__.py"]
+[tool.poetry_bumpversion.file."tedious/__init__.py"]
