@@ -1,8 +1,13 @@
 import logging
 from rich.logging import RichHandler
 from rich.console import Console
+from enum import Enum
 
-def get(name, format="[%(name)-20s] %(message)s", level=logging.DEBUG):
+class FORMAT(str, Enum):
+    NAME_MESSAGE = "[%(name)s] %(message)s"
+    NAME_THREAD_MESSAGE = "[%(name)s][%(threadName)s] %(message)s"
+
+def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
     logger = logging.getLogger(name)
     formatter = logging.Formatter(format)
     handler = RichHandler(rich_tracebacks=True, console=Console(width=150))
