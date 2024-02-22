@@ -13,6 +13,16 @@ def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
     handler = RichHandler(rich_tracebacks=True, console=Console(width=150))
     handler.setFormatter(formatter)
     logger.handlers = [handler]
+
+    if level == "info":
+        level = logging.INFO
+    elif level == "debug":
+        level = logging.DEBUG
+    elif level == "error":
+        level = logging.ERROR
+    else:
+        level = logging.INFO
+
     logger.setLevel(level)
 
     info = lambda x, indent=0: logger.info("  "*indent + str(x).replace('\n', '\n'+"  "*indent))
