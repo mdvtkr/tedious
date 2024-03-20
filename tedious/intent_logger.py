@@ -20,7 +20,7 @@ def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
         level = logging.DEBUG
     elif level == "error":
         level = logging.ERROR
-    else:
+    elif type(level) == str:
         level = logging.INFO
 
     logger.setLevel(level)
