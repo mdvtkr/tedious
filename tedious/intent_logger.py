@@ -7,6 +7,22 @@ class FORMAT(str, Enum):
     NAME_MESSAGE = "[%(name)s] %(message)s"
     NAME_THREAD_MESSAGE = "[%(name)s][%(threadName)s] %(message)s"
 
+def conv_level_code(level:str):
+    if level == "info":
+        level = logging.INFO
+    elif level == "debug":
+        level = logging.DEBUG
+    elif level == "error":
+        level = logging.ERROR
+    elif level == "fatal":
+        level = logging.CRITICAL    
+    elif level == "warn":
+        level = logging.WARN
+    elif type(level) == str:
+        level = logging.INFO
+    return level
+
+
 def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
     logger = logging.getLogger(name)
     formatter = logging.Formatter(format)
@@ -14,16 +30,7 @@ def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
     handler.setFormatter(formatter)
     logger.handlers = [handler]
 
-    if level == "info":
-        level = logging.INFO
-    elif level == "debug":
-        level = logging.DEBUG
-    elif level == "error":
-        level = logging.ERROR
-    elif type(level) == str:
-        level = logging.INFO
-
-    logger.setLevel(level)
+    logger.setLevel(conv_level_code(level))
 
     info = lambda x, indent=0: logger.info("  "*indent + str(x).replace('\n', '\n'+"  "*indent))
     dbg = lambda x, indent=0: logger.debug("  "*indent + str(x).replace('\n', '\n'+"  "*indent))
