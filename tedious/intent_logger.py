@@ -32,7 +32,7 @@ def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
 
     logger.setLevel(conv_level_code(level))
 
-    info = lambda x, indent=0: logger.info("  "*indent + str(x).replace('\n', '\n'+"  "*indent))
-    dbg = lambda x, indent=0: logger.debug("  "*indent + str(x).replace('\n', '\n'+"  "*indent))
-    err = lambda x, indent=0: logger.error("  "*indent + str(x).replace('\n', '\n'+"  "*indent))
+    info = lambda x, indent=0: logger.info("  "*indent + str(x).replace('\n', '\n'+"  "*indent), stacklevel=2)
+    dbg = lambda x, indent=0: logger.debug("  "*indent + str(x).replace('\n', '\n'+"  "*indent), stacklevel=2)
+    err = lambda x, indent=0: logger.error("  "*indent + str(x).replace('\n', '\n'+"  "*indent), stacklevel=2)
     return info, dbg, err, logger
