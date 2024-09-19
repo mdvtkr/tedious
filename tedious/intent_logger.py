@@ -2,6 +2,7 @@ import logging
 from rich.logging import RichHandler
 from rich.console import Console
 from enum import Enum
+from logging.handlers import RotatingFileHandler
 
 class FORMAT(str, Enum):
     NAME_MESSAGE = "[%(name)s] %(message)s"
@@ -23,12 +24,23 @@ def conv_level_code(level:str):
     return level
 
 
-def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG):
+def get(name, format:FORMAT|str=FORMAT.NAME_MESSAGE, level=logging.DEBUG, file=None):
     logger = logging.getLogger(name)
     formatter = logging.Formatter(format)
     handler = RichHandler(rich_tracebacks=True, console=Console(width=150))
     handler.setFormatter(formatter)
-    logger.handlers = [handler]
+    handlers = [handler]
+
+    if file:
+        from pathlib import Path
+        Path(file).parent.mkdir(0o755, True, True)
+        fileHandler = RotatingFileHandler(file, 
+                                          mode='a', 
+                                          maxBytes=1024 * 1024 * 10,  # 10Mb
+                                          backupCount=3)
+        fileHandler.setFormatter(formatter)
+        handlers.append(fileHandler)
+    logger.handlers = handlers
 
     logger.setLevel(conv_level_code(level))
 
